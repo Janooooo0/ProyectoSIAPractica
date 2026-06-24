@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIA — Iniciar Sesión</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --surface: #111622;
+    --surface2: #171e2e;
+    --border: #1f2d45;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59,130,246,0.25);
+    --accent2: #10b981;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --danger: #ef4444;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Sora', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  /* Diagonal accent shape */
+  .left-panel::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -120px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .brand-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .brand-name {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .brand-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .hero {
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .hero-title span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.7;
+    max-width: 400px;
+    font-weight: 300;
+  }
+
+  /* Feature pills */
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .feature-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  }
+
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+
+  /* ── DIVIDER ── */
+  .divider-line {
+    width: 1px;
+    background: var(--border);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  /* ── RIGHT PANEL (LOGIN FORM) ── */
+  .right-panel {
+    width: 480px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+    position: relative;
+    z-index: 1;
+    background: rgba(17,22,34,0.7);
+    backdrop-filter: blur(12px);
+    border-left: 1px solid var(--border);
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 360px;
+    animation: fadeUp 0.6s ease 0.15s both;
+  }
+
+  .login-header {
+    margin-bottom: 36px;
+  }
+
+  .login-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .login-sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  /* ── USER SELECTOR ── */
+  .user-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .user-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    font-family: var(--mono);
+  }
+
+  .user-chip:hover {
+    border-color: var(--accent);
+    color: var(--text2);
+    background: rgba(59,130,246,0.06);
+  }
+
+  .user-chip.selected {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .user-chip.selected .user-avatar {
+    background: rgba(59,130,246,0.15);
+    border-color: var(--accent);
+  }
+
+  .user-name { line-height: 1.2; }
+
+  /* ── FORM ── */
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: var(--text3);
+    pointer-events: none;
+  }
+
+  .input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 13px 14px 13px 42px;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .input::placeholder { color: var(--text3); }
+
+  .input:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  }
+
+  .input.error {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  }
+
+  /* Toggle password */
+  .toggle-pass {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+
+  .toggle-pass:hover { color: var(--text2); }
+
+  /* ── OPTIONS ROW ── */
+  .options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .remember input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .forgot {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--mono);
+    transition: opacity 0.15s;
+  }
+
+  .forgot:hover { opacity: 0.7; }
+
+  /* ── BTN ── */
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-login::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .btn-login:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.35);
+  }
+
+  .btn-login:active { transform: translateY(0); }
+
+  .btn-login.loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .btn-login.loading .spinner { display: block; }
+  .btn-login.loading .btn-text { display: none; }
+
+  /* ── ERROR MESSAGE ── */
+  .error-msg {
+    display: none;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--danger);
+    margin-bottom: 16px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .success-overlay.show { display: flex; animation: fadeIn 0.4s ease; }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.15);
+    border: 2px solid var(--accent2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    animation: popIn 0.4s ease;
+    box-shadow: 0 0 40px rgba(16,185,129,0.2);
+  }
+
+  .success-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .success-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .progress-bar {
+    width: 200px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent2);
+    border-radius: 2px;
+    animation: progress 2s linear forwards;
+  }
+
+  /* ── DIVIDER TEXT ── */
+  .divider-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .divider-text::before,
+  .divider-text::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ROLE BADGE ── */
+  .role-badge {
+    display: none;
+    margin-top: 20px;
+    padding: 12px 14px;
+    background: rgba(59,130,246,0.06);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    align-items: center;
+    gap: 10px;
+  }
+
+  .role-badge.show { display: flex; }
+
+  .role-badge strong { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes progress {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+
+  .shake { animation: shake 0.4s ease; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .left-panel { display: none; }
+    .divider-line { display: none; }
+    .right-panel { width: 100%; border-left: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="brand">
+    <div class="brand-icon">▣</div>
+    <div>
+      <div class="brand-name">SIA</div>
+      <div class="brand-sub">Sistema de Información Administrativa</div>
+    </div>
+  </div>
+  
+  <div class="hero">
+    <div class="hero-label">UCSM · Ingeniería de Sistemas</div>
+    <h1 class="hero-title">
+      Control<br>Contable
+      <span>Simplificado.</span>
+    </h1>
+    <p class="hero-desc">
+      Gestiona guías de remisión, asientos contables y tablas maestras desde una sola plataforma diseñada para tu empresa.
+    </p>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-dot"></div>
+      Registro de Guías de Remisión con trazabilidad completa
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      Asientos contables con verificación de balance automática
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      Plan de cuentas PCGE integrado
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      Control de proveedores y productos en tiempo real
+    </div>
+  </div>
+
+  <div class="footer-text">
+    © 2024 SIA · Universidad Católica de Santa María
+  </div>
+</div>
+
+<div class="divider-line"></div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="login-box">
+
+    <div class="login-header">
+      <div class="login-title">Bienvenido 👋</div>
+      <div class="login-sub">Ingresa tus credenciales para continuar</div>
+    </div>
+
+    <!-- QUICK USER SELECTOR -->
+    <div class="user-selector" id="userSelector">
+      <div class="user-chip" onclick="selectUser('admin', '🛡️', 'Administrador')">
+        <div class="user-avatar">🛡️</div>
+        <div class="user-name">Administrador</div>
+      </div>
+      <div class="user-chip" onclick="selectUser('contador', '📒', 'Contador')">
+        <div class="user-avatar">📒</div>
+        <div class="user-name">Contador</div>
+      </div>
+      <div class="user-chip" onclick="selectUser('almacen', '📦', 'Almacén')">
+        <div class="user-avatar">📦</div>
+        <div class="user-name">Almacén</div>
+      </div>
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div class="error-msg" id="errorMsg">
+      ⚠ Usuario o contraseña incorrectos. Inténtalo de nuevo.
+    </div>
+
+    <!-- FORM -->
+    <div class="field">
+      <label class="label">Usuario</label>
+      <div class="input-wrap">
+        <span class="input-icon">👤</span>
+        <input class="input" type="text" id="username" placeholder="usuario@empresa.com" autocomplete="username">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Contraseña</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="toggle-pass" onclick="togglePass()" id="toggleBtn" title="Mostrar contraseña">👁</button>
+      </div>
+    </div>
+
+    <div class="options-row">
+      <label class="remember">
+        <input type="checkbox" id="remember"> Recordar sesión
+      </label>
+      <a href="#" class="forgot">¿Olvidaste tu clave?</a>
+    </div>
+
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">
+      <div class="spinner"></div>
+      <span class="btn-text">Iniciar Sesión →</span>
+    </button>
+
+    <!-- ROLE BADGE (shown after user selection) -->
+    <div class="role-badge" id="roleBadge">
+      <span>🔑</span>
+      <span>Iniciando como <strong id="roleText">—</strong> · Acceso completo al sistema</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Acceso concedido</div>
+  <div class="success-sub" id="successUser">Bienvenido, Administrador</div>
+  <div class="progress-bar">
+    <div class="progress-fill"></div>
+  </div>
+  <div style="font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:4px;">
+    Cargando el sistema...
+  </div>
+</div>
+
+<script>
+  // ── USUARIOS VÁLIDOS ──
+  const USERS = {
+    'admin':    { password: 'admin123',    role: 'Administrador', emoji: '🛡️' },
+    'contador': { password: 'conta2024',   role: 'Contador',      emoji: '📒' },
+    'almacen':  { password: 'alma2024',    role: 'Almacén',       emoji: '📦' },
+  };
+
+  // ── SELECCIONAR USUARIO RÁPIDO ──
+  function selectUser(user, emoji, label) {
+    document.querySelectorAll('.user-chip').forEach(c => c.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('username').value = user;
+    document.getElementById('password').focus();
+    document.getElementById('roleBadge').classList.add('show');
+    document.getElementById('roleText').textContent = label;
+    hideError();
+  }
+
+  // ── TOGGLE CONTRASEÑA ──
+  function togglePass() {
+    const input = document.getElementById('password');
+    const btn = document.getElementById('toggleBtn');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁';
+    }
+  }
+
+  // ── MOSTRAR/OCULTAR ERROR ──
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = '⚠ ' + msg;
+    el.style.display = 'flex';
+    document.getElementById('username').classList.add('error');
+    document.getElementById('password').classList.add('error');
+    document.getElementById('loginForm')?.classList.add('shake');
+    document.getElementById('btnLogin').classList.add('shake');
+    setTimeout(() => document.getElementById('btnLogin').classList.remove('shake'), 400);
+  }
+
+  function hideError() {
+    document.getElementById('errorMsg').style.display = 'none';
+    document.getElementById('username').classList.remove('error');
+    document.getElementById('password').classList.remove('error');
+  }
+
+  // ── LOGIN ──
+  function doLogin() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value;
+    const btn = document.getElementById('btnLogin');
+
+    hideError();
+
+    if (!user) { showError('Ingresa tu nombre de usuario.'); return; }
+    if (!pass)  { showError('Ingresa tu contraseña.'); return; }
+
+    // Simular carga
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      btn.classList.remove('loading');
+
+      if (USERS[user] && USERS[user].password === pass) {
+        // Éxito
+        const rol = USERS[user].role;
+        document.getElementById('successUser').textContent =
+          'Bienvenido/a, ' + rol + ' ' + USERS[user].emoji;
+        document.getElementById('successOverlay').classList.add('show');
+        // Redirigir al sistema luego de 2.2 seg
+        setTimeout(() => {
+          alert('✓ Redirigiendo al sistema principal...\n\nUsuario: ' + user + '\nRol: ' + rol);
+          // window.location.href = 'sistema_contable.html'; // descomentar para producción
+        }, 2200);
+      } else {
+        showError('Usuario o contraseña incorrectos. Inténtalo de nuevo.');
+      }
+    }, 1200);
+  }
+
+  // ── USUARIOS DE PRUEBA EN CONSOLA ──
+  console.log('%c🔑 Credenciales de prueba:', 'color:#3b82f6; font-weight:bold; font-size:14px;');
+  console.log('admin / admin123  →  Administrador');
+  console.log('contador / conta2024  →  Contador');
+  console.log('almacen / alma2024  →  Almacén');
+</script>
+</body>
+</html>
